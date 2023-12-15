@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do</title>
+  <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      padding: 40px;
+      background-color: #f2f2f2;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      width: 200px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 8px 12px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    li input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    li span {
+      flex-grow: 1;
+    }
+
+    li button {
+      background-color: #e74c3c;
+      margin-left: 10px;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+
+    .schedule {
+      margin-top: 30px;
+    }
+
+    .schedule input[type="datetime-local"] {
+      width: 220px;
+      margin-right: 10px;
+    }
+
+    .schedule button {
+      background-color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div id="app">
+      <h1>To-Do</h1>
+      <div>
+        <input type="text" v-model="newTask.name" placeholder="Add a new task">
+        <button @click="addTask">Add</button>
+      </div>
+      <ul>
+        <li v-for="(task, index) in tasks" :key="index" :class="{ completed: task.completed }">
+          <input type="checkbox" v-model="task.completed">
+          <span>{{ task.name }}</span>
+          <button @click="deleteTask(index)">Delete</button>
+        </li>
+      </ul>
+      <div class="schedule">
+        <h2>Schedule Task</h2>
+        <div>
+          <input type="datetime-local" v-model="newTask.schedule">
+          <button @click="scheduleTask">Schedule</button>
+        </div>
+        <ul v-if="scheduledTasks.length > 0">
+          <li v-for="(task, index) in scheduledTasks" :key="index">
+            <span>{{ task.name }}</span> - {{ task.schedule }}
+          </li>
+        </ul>
+        <p v-else>No tasks scheduled</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        tasks: [],
+        newTask: {
+          name: '',
+          completed: false,
+          schedule: ''
+        },
+        scheduledTasks: []
+      },
+      methods: {
+        addTask: function() {
+          if (this.newTask.name.trim() === '') {
+            return;
+          }
+          this.tasks.push({...this.newTask});
+          this.newTask.name = '';
+          this.newTask.completed = false;
+        },
+        deleteTask: function(index) {
+          this.tasks.splice(index, 1);
+        },
+        scheduleTask: function() {
+          if (this.newTask.name.trim() === '' || this.newTask.schedule.trim() === '') {
+            return;
+          }
+          this.scheduledTasks.push({...this.newTask});
+          this.newTask.schedule = '';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
